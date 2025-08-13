@@ -1,0 +1,27 @@
+# AWS Configuration files (contienen información sensible)
+config/*.pem
+config/*-config.txt
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Flask
+instance/
+.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
