@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partido en Vivo - StatsBasket</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header principal -->
+    <div class="live-header">
+        <div style="text-align: center;">
+            <h2 style="margin: 0; color: var(--color-secondary);">🏀 EN VIVO</h2>
+            <div class="live-meta" id="game-meta">
+                <!-- Se carga dinámicamente -->
+            </div>
+            
+            <!-- Cronómetro principal -->
+            <div class="game-timer-container">
+                <div class="timer-display" id="game-timer-display">10:00</div>
+                <div class="quarter-info" id="quarter-info">Cuarto 1 - Tiempo restante: 10:00</div>
+                
+                <!-- Controles del cronómetro -->
+                <div class="timer-controls">
+                    <button class="btn primary timer-btn" id="timer-play-btn" onclick="startTimer()">
+                        ▶️ Iniciar
+                    </button>
+                    <button class="btn danger timer-btn" id="timer-pause-btn" onclick="pauseTimer()" style="display: none;">
+                        ⏸️ Pausar
+                    </button>
+                    <button class="btn ghost timer-btn" id="timer-reset-btn" onclick="resetTimer()">
+                        🔄 Reset
+                    </button>
+                </div>
+                
+                <!-- Controles de cuarto -->
+                <div class="quarter-controls">
+                    <button class="btn secondary small" onclick="nextQuarter()">
+                        ⏭️ Siguiente Cuarto
+                    </button>
+                    <button class="btn secondary small" onclick="endCurrentQuarter()">
+                        🏁 Finalizar Cuarto
+                    </button>
+                    <button class="btn danger small" onclick="finishGameManually()">
+                        🏆 Finalizar Partido
+                    </button>
+                </div>
+                
+                <!-- Opciones -->
+                <div class="timer-options">
+                    <label style="color: var(--color-text-secondary); font-size: 0.9rem;">
+                        <input type="checkbox" id="auto-pause-checkbox" checked>
+                        Auto-pausar al registrar acción
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Selector de cuartos -->
+        <div class="quarter-selector">
+            <button class="quarter-btn active" data-quarter="1" onclick="selectQuarter(1)">1</button>
+            <button class="quarter-btn" data-quarter="2" onclick="selectQuarter(2)">2</button>
+            <button class="quarter-btn" data-quarter="3" onclick="selectQuarter(3)">3</button>
+            <button class="quarter-btn" data-quarter="4" onclick="selectQuarter(4)">4</button>
+        </div>
+        
+        <!-- Navegación -->
+        <div class="live-actions">
+            <a href="index.html" class="btn ghost">🏠 Inicio</a>
+            <button class="btn secondary" onclick="openSubstitutionsModal()">
+                🔄 Sustituciones
+            </button>
+            <a href="reportes.html" class="btn ghost">
+                📊 Reportes
+            </a>
+            <!-- Backup toolbar -->
+            <div id="backup-host"></div>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="live-body">
+        <!-- Panel izquierdo: Jugadores -->
+        <div class="live-players">
+            <!-- Jugadores en cancha -->
+            <div class="card">
+                <h2>En Cancha (5)</h2>
+                <div id="on-court-list" class="player-list">
+                    <!-- Se carga dinámicamente -->
+                </div>
+            </div>
+            
+            <!-- Jugadores en el banco -->
+            <div class="card">
+                <h2>Banco</h2>
+                <div id="bench-list" class="player-list">
+                    <!-- Se carga dinámicamente -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Panel derecho: Acciones y estadísticas -->
+        <div class="actions-panel">
+            <!-- Tiros con zona -->
+            <div class="action-group">
+                <h3>Puntos</h3>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="openShotModal('2PA')" disabled>2PA</button>
+                    <button class="action-btn" onclick="openShotModal('2PM')" disabled>2PM</button>
+                    <button class="action-btn" onclick="openShotModal('3PA')" disabled>3PA</button>
+                    <button class="action-btn" onclick="openShotModal('3PM')" disabled>3PM</button>
+                    <button class="action-btn" onclick="recordAction('FTA')" disabled>FTA</button>
+                    <button class="action-btn" onclick="recordAction('FTM')" disabled>FTM</button>
+                </div>
+            </div>
+            
+            <!-- Pintura simplificada -->
+            <div class="action-group">
+                <h3>Pintura</h3>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="openShotModalPintura('pintura', false)" disabled>Fallo</button>
+                    <button class="action-btn" onclick="openShotModalPintura('pintura', true)" disabled>Anotado</button>
+                </div>
+            </div>
+            
+            <!-- Otras estadísticas -->
+            <div class="action-group">
+                <h3>Otras Estadísticas</h3>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="recordAction('AST')" disabled>AST</button>
+                    <button class="action-btn" onclick="recordAction('STL')" disabled>STL</button>
+                    <button class="action-btn" onclick="recordAction('BLK')" disabled>BLK</button>
+                    <button class="action-btn" onclick="recordAction('OREB')" disabled>OREB</button>
+                    <button class="action-btn" onclick="recordAction('DREB')" disabled>DREB</button>
+                    <button class="action-btn" onclick="recordAction('TOV')" disabled>TOV</button>
+                    <button class="action-btn" onclick="recordAction('PF')" disabled>PF</button>
+                </div>
+            </div>
+            
+            <!-- Jugador activo -->
+            <div class="card" style="text-align: center;">
+                <h3>Jugador Activo</h3>
+                <div id="active-player-display">
+                    <div style="color: var(--color-text-secondary);">
+                        Selecciona un jugador
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lista de eventos -->
+            <div class="events-list">
+                <h3 style="margin-bottom: 1rem; color: var(--color-secondary);">Eventos del Partido</h3>
+                <div id="events-container">
+                    <!-- Los eventos se cargan dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de sustituciones -->
+    <dialog id="substitutions-modal">
+        <div class="modal-header">
+            <h3>🔄 Sustituciones</h3>
+            <button class="btn ghost" onclick="closeSubstitutionsModal()">✕</button>
+        </div>
+        
+        <div id="sub-status" style="margin-bottom: 1.5rem;"></div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 1.5rem 0;">
+            <!-- Sale -->
+            <div>
+                <h4 style="margin-bottom: 1rem; color: var(--color-secondary);">Sale (En Cancha)</h4>
+                <div id="sub-out-list" class="player-list"></div>
+            </div>
+            
+            <!-- Entra -->
+            <div>
+                <h4 style="margin-bottom: 1rem; color: var(--color-secondary);">Entra (Banco)</h4>
+                <div id="sub-in-list" class="player-list"></div>
+            </div>
+        </div>
+        
+        <div class="modal-actions">
+            <button class="btn secondary" onclick="closeSubstitutionsModal()">Cancelar</button>
+            <button class="btn primary" id="confirm-sub-btn" onclick="confirmSubstitution()" disabled>
+                Aplicar Sustitución
+            </button>
+        </div>
+    </dialog>
+
+    <!-- Modal de selección de zona de tiro -->
+    <dialog id="shot-zone-modal">
+        <div class="modal-header">
+            <h3 id="shot-modal-title">Seleccionar Zona del Tiro</h3>
+            <button class="btn ghost" onclick="closeShotModal()">✕</button>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <strong id="shot-player-info"></strong>
+        </div>
+        
+        <!-- Selector de zona -->
+        <div class="shot-zone-selector">
+            <h4 style="margin-bottom: 1rem; color: var(--color-secondary);">¿Desde dónde fue el tiro?</h4>
+            <div class="zone-buttons-grid">
+                <button class="zone-btn" onclick="selectShotZone('esquina-izq')" data-zone="esquina-izq">
+                    📍 Esquina Izquierda
+                </button>
+                <button class="zone-btn" onclick="selectShotZone('ala-izq')" data-zone="ala-izq">
+                    📍 Ala Izquierda
+                </button>
+                <button class="zone-btn" onclick="selectShotZone('centro')" data-zone="centro">
+                    📍 Centro
+                </button>
+                <button class="zone-btn" onclick="selectShotZone('ala-der')" data-zone="ala-der">
+                    📍 Ala Derecha
+                </button>
+                <button class="zone-btn" onclick="selectShotZone('esquina-der')" data-zone="esquina-der">
+                    📍 Esquina Derecha
+                </button>
+                <button class="zone-btn" onclick="selectShotZone('pintura')" data-zone="pintura">
+                    🎯 Pintura
+                </button>
+            </div>
+        </div>
+        
+        <div class="modal-actions">
+            <button class="btn secondary" onclick="closeShotModal()">Cancelar</button>
+            <button class="btn primary" id="confirm-shot-btn" onclick="confirmShotWithZone()" disabled>
+                Registrar Tiro
+            </button>
+        </div>
+    </dialog>
+
+    <script type="module" src="live.js"></script>
+</body>
+</html>

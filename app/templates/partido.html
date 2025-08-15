@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Partido - StatsBasket</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>CONFIGURAR PARTIDO</h1>
+            <p class="subtitle">DATOS Y QUINTETA INICIAL</p>
+            
+            <!-- Backup toolbar se monta aquí -->
+            <div id="backup-host"></div>
+            
+            <!-- Formulario del partido -->
+            <form class="form-grid game-form" id="game-form">
+                <div class="form-group">
+                    <label for="opponent">Rival *</label>
+                    <input type="text" id="opponent" name="opponent" required 
+                           placeholder="Nombre del equipo rival" autocomplete="off">
+                    <!-- Navegación -->
+        <div class="card" style="text-align: center;">
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="index.html" class="btn ghost">🏠 Inicio</a>
+                <a href="jugadores.html" class="btn secondary">← Jugadores</a>
+                <a href="reportes.html" class="btn ghost">📊 Reportes</a>
+            </div>
+        </div>
+    </div>
+                
+                <div class="form-group">
+                    <label for="homeaway">Local/Visitante *</label>
+                    <select id="homeaway" name="homeaway" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="LOCAL">LOCAL</option>
+                        <option value="VISITANTE">VISITANTE</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="venue">Lugar</label>
+                    <input type="text" id="venue" name="venue" 
+                           placeholder="Nombre del lugar (opcional)">
+                </div>
+                
+                <div class="form-group">
+                    <label for="date">Fecha *</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+                
+                <button type="submit" class="btn primary">Guardar datos</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Estado del formulario -->
+        <div id="status-message"></div>
+        
+        <!-- Quinteta inicial -->
+        <div class="card">
+            <h2>Quinteta Inicial</h2>
+            
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <button class="btn secondary" id="select-starters-btn" onclick="openStartersModal()">
+                    Seleccionar titulares (<span id="starters-count">0</span>/5)
+                </button>
+            </div>
+            
+            <!-- Chips de titulares seleccionados -->
+            <div id="starters-display" class="chips" style="min-height: 3rem; justify-content: center;">
+                <!-- Los chips se cargan dinámicamente -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn primary" id="start-game-btn" disabled onclick="startGame()">
+                    Iniciar Partido
+                </button>
+            </div>
+        </div>
+        
+        <!-- Información de jugadores disponibles -->
+        <div class="card" id="players-info">
+            <h2>Jugadores Disponibles</h2>
+            <div id="players-summary">
+                <!-- Se carga dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de selección de titulares -->
+    <dialog id="starters-modal">
+        <div class="modal-header">
+            <h3>Seleccionar Quinteta Inicial</h3>
+            <button class="btn ghost" onclick="closeStartersModal()" style="padding: 0.5rem 1rem;">✕</button>
+        </div>
+        
+        <div id="modal-status"></div>
+        
+        <div class="player-list" id="modal-players-list">
+            <!-- Los jugadores se cargan dinámicamente -->
+        </div>
+        
+        <div class="modal-actions">
+            <button class="btn secondary" onclick="closeStartersModal()">Cancelar</button>
+            <button class="btn primary" id="confirm-starters-btn" onclick="confirmStarters()">
+                Confirmar Titulares
+            </button>
+        </div>
+    </dialog>
+
+    <script type="module" src="partido.js"></script>
+</body>
+</html>

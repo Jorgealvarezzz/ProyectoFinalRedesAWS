@@ -28,3 +28,27 @@ def info():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
+@app.route('/jugadores')
+def jugadores():
+    return render_template('jugadores.html')
+
+@app.route('/live') 
+def live():
+    return render_template('live.html')
+
+@app.route('/partido')
+def partido():
+    return render_template('partido.html')
+
+@app.route('/reportes')
+def reportes():
+    return render_template('reportes.html')
+
+# Para servir archivos CSS y JS
+@app.route('/styles.css')
+def styles():
+    return send_from_directory('templates', 'styles.css')
+
+@app.route('/<filename>.js')
+def js_files(filename):
+    return send_from_directory('templates', f'{filename}.js')

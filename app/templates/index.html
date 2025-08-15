@@ -3,77 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS DevOps Project</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1 { color: #232F3E; }
-        .status { background: #4CAF50; color: white; padding: 10px; border-radius: 5px; }
-        .api-endpoint { background: #f9f9f9; padding: 15px; margin: 10px 0; border-left: 4px solid #FF9900; }
-        button {
-            background: #FF9900;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        button:hover { background: #e88900; }
-        #response { background: #f0f0f0; padding: 15px; margin-top: 20px; border-radius: 5px; }
-    </style>
+    <title>StatsBasket - Gallos Aguascalientes</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🚀 AWS DevOps Final Project</h1>
-        <div class="status">✅ Aplicación desplegada exitosamente en AWS EC2</div>
-        
-        <h2>Información del Proyecto</h2>
-        <ul>
-            <li><strong>Tecnología:</strong> Flask + Python</li>
-            <li><strong>Infraestructura:</strong> AWS EC2, S3, Elastic IP</li>
-            <li><strong>Automatización:</strong> AWS CLI Scripts</li>
-            <li><strong>Repositorio:</strong> GitHub</li>
-        </ul>
-        
-        <h2>API Endpoints</h2>
-        <div class="api-endpoint">
-            <strong>GET /api/status</strong> - Estado del servidor
-            <button onclick="testAPI('/api/status')">Probar</button>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>GALLOS AGUASCALIENTES</h1>
+            <p class="subtitle">LA GALLERA</p>
+            
+            <div class="hero-actions" style="margin-top: 3rem;">
+                <a href="jugadores.html" class="btn secondary">Registrar jugadores</a>
+                <a href="partido.html" class="btn primary">Iniciar partido</a>
+                <a href="reportes.html" class="btn ghost">Ver reportes</a>
+            </div>
         </div>
-        <div class="api-endpoint">
-            <strong>GET /api/info</strong> - Información del proyecto
-            <button onclick="testAPI('/api/info')">Probar</button>
-        </div>
-        
-        <div id="response"></div>
     </div>
-    
-    <script>
-        function testAPI(endpoint) {
-            fetch(endpoint)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('response').innerHTML = 
-                        '<h3>Respuesta de ' + endpoint + ':</h3><pre>' + 
-                        JSON.stringify(data, null, 2) + '</pre>';
-                })
-                .catch(error => {
-                    document.getElementById('response').innerHTML = 
-                        '<h3>Error:</h3><p>' + error + '</p>';
-                });
-        }
-    </script>
+
+    <div class="container">
+        <div class="card" style="text-align: center; max-width: 600px; margin: 2rem auto;">
+            <h2>Bienvenido al sistema de estadísticas</h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: 1.5rem;">
+                Gestiona jugadores, configura partidos y registra estadísticas en tiempo real 
+                para el equipo Gallos Aguascalientes.
+            </p>
+            
+            <div style="display: grid; gap: 1rem; max-width: 300px; margin: 0 auto;">
+                <div style="padding: 1rem; background: var(--color-bg); border-radius: 8px;">
+                    <h3 style="color: var(--color-secondary); margin-bottom: 0.5rem;">📋 Jugadores</h3>
+                    <p style="font-size: 0.9rem;">Registra hasta 17 jugadores con nombre y número</p>
+                </div>
+                
+                <div style="padding: 1rem; background: var(--color-bg); border-radius: 8px;">
+                    <h3 style="color: var(--color-secondary); margin-bottom: 0.5rem;">🏀 Partido</h3>
+                    <p style="font-size: 0.9rem;">Configura rival, fecha y quinteta inicial</p>
+                </div>
+                
+                <div style="padding: 1rem; background: var(--color-bg); border-radius: 8px;">
+                    <h3 style="color: var(--color-secondary); margin-bottom: 0.5rem;">📊 En Vivo</h3>
+                    <p style="font-size: 0.9rem;">Registra estadísticas durante el partido</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes y Estadísticas - StatsBasket</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Librerías optimizadas para PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <!-- Header principal -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>📊 REPORTES Y ESTADÍSTICAS</h1>
+            <p class="subtitle">Análisis completo del rendimiento del equipo</p>
+            <div id="backup-host"></div>
+        </div>
+    </div>
+
+    <!-- Contenedor principal del reporte -->
+    <div class="container" id="report-root">
+        
+        <!-- Gestión de partidos -->
+        <div class="card">
+            <h2>🏀 Gestión de Partidos</h2>
+            
+            <div class="game-management-controls">
+                <button class="btn danger" onclick="clearAllGames()">
+                    🗑️ Eliminar TODOS los partidos
+                </button>
+                <button class="btn secondary" onclick="deleteCompletedGames()">
+                    🧹 Limpiar completados
+                </button>
+                <button class="btn ghost" onclick="toggleGameManagement()">
+                    ⚙️ Modo gestión
+                </button>
+            </div>
+            
+            <div id="game-selector">
+                <!-- Se carga dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Información del partido seleccionado -->
+        <div class="card" id="game-info-card" style="display: none;">
+            <div class="game-header">
+                <h2 id="game-title"></h2>
+                <div class="game-meta" id="game-details"></div>
+            </div>
+            
+            <!-- Acciones de exportación -->
+            <div class="export-actions">
+                <button class="btn primary" onclick="exportPDF()">
+                    📄 Descargar PDF Completo
+                </button>
+                <button class="btn secondary" onclick="exportExcel()">
+                    📋 Exportar Excel
+                </button>
+                <button class="btn ghost" onclick="printReport()">
+                    🖨️ Imprimir Reporte
+                </button>
+            </div>
+        </div>
+
+        <!-- Insights automáticos para el coach -->
+        <div class="card" id="coaching-insights" style="display: none;">
+            <h2>💡 Insights Automáticos para el Coach</h2>
+            <div id="insights-container">
+                <!-- Se genera dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Análisis completo de tiros por zona -->
+        <div class="card" id="shot-analysis" style="display: none;">
+            <h2>🎯 Análisis Completo de Tiros por Zona</h2>
+            
+            <!-- Resumen ejecutivo -->
+            <div class="shooting-summary">
+                <h3>📈 Resumen Ejecutivo de Tiros</h3>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <h4>Tiros de 2 Puntos</h4>
+                        <div class="big-stat" id="two-point-percentage">0%</div>
+                        <div class="stat-detail" id="two-point-detail">0/0</div>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Tiros de 3 Puntos</h4>
+                        <div class="big-stat" id="three-point-percentage">0%</div>
+                        <div class="stat-detail" id="three-point-detail">0/0</div>
+                    </div>
+                    <div class="summary-card best-zone">
+                        <h4>🔥 Zona Más Efectiva</h4>
+                        <div class="best-zone-name" id="best-zone-name">-</div>
+                        <div class="best-zone-stat" id="best-zone-stat">0%</div>
+                    </div>
+                    <div class="summary-card worst-zone">
+                        <h4>❄️ Zona a Mejorar</h4>
+                        <div class="worst-zone-name" id="worst-zone-name">-</div>
+                        <div class="worst-zone-stat" id="worst-zone-stat">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desglose detallado por zona -->
+            <div class="zones-analysis">
+                <h3>📊 Efectividad Detallada por Zona</h3>
+                <div class="zones-grid" id="zones-breakdown">
+                    <!-- Se carga dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Mapa de calor visual -->
+            <div class="heat-map-section">
+                <h3>🗺️ Mapa de Calor de Efectividad</h3>
+                <div class="court-heatmap" id="court-heatmap">
+                    <!-- Se carga dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Box Score Completo (NUEVO) -->
+        <div class="card stats-table-card" id="full-box-score" style="display: none;">
+            <h2>📋 BOX SCORE COMPLETO DEL EQUIPO</h2>
+            <div class="table-container">
+                <table class="stats-table" id="full-box-table">
+                    <thead>
+                        <tr>
+                            <th class="player-col">JUGADOR</th>
+                            <th>ROL</th>
+                            <th>MIN</th>
+                            <th>2P</th>
+                            <th>%2P</th>
+                            <th>3P</th>
+                            <th>%3P</th>
+                            <th>FT</th>
+                            <th>%FT</th>
+                            <th>OREB</th>
+                            <th>DREB</th>
+                            <th>REB</th>
+                            <th>AST</th>
+                            <th>STL</th>
+                            <th>BLK</th>
+                            <th>TOV</th>
+                            <th>PF</th>
+                            <th>+/-</th>
+                            <th>PTS</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Box Score - Titulares -->
+        <div class="card stats-table-card" id="starters-stats" style="display: none;">
+            <h2>🏆 JUGADORES TITULARES</h2>
+            <div class="table-container">
+                <table class="stats-table" id="starters-table">
+                    <thead>
+                        <tr>
+                            <th class="player-col">JUGADOR</th>
+                            <th>MIN</th>
+                            <th>FG</th>
+                            <th>%2PT</th>
+                            <th>3P</th>
+                            <th>%3PT</th>
+                            <th>FT</th>
+                            <th>%FT</th>
+                            <th>OREB</th>
+                            <th>DREB</th>
+                            <th>REB</th>
+                            <th>AST</th>
+                            <th>STL</th>
+                            <th>BLK</th>
+                            <th>TOV</th>
+                            <th>PF</th>
+                            <th>+/-</th>
+                            <th>PTS</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Box Score - Suplentes -->
+        <div class="card stats-table-card" id="bench-stats" style="display: none;">
+            <h2>🔄 JUGADORES SUPLENTES</h2>
+            <div class="table-container">
+                <table class="stats-table" id="bench-table">
+                    <thead>
+                        <tr>
+                            <th class="player-col">JUGADOR</th>
+                            <th>MIN</th>
+                            <th>FG</th>
+                            <th>%2PT</th>
+                            <th>3P</th>
+                            <th>%3PT</th>
+                            <th>FT</th>
+                            <th>%FT</th>
+                            <th>OREB</th>
+                            <th>DREB</th>
+                            <th>REB</th>
+                            <th>AST</th>
+                            <th>STL</th>
+                            <th>BLK</th>
+                            <th>TOV</th>
+                            <th>PF</th>
+                            <th>+/-</th>
+                            <th>PTS</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Totales del equipo -->
+        <div class="card stats-table-card" id="team-totals" style="display: none;">
+            <h2>📊 ESTADÍSTICAS TOTALES DEL EQUIPO</h2>
+            <div class="table-container">
+                <table class="stats-table" id="team-table">
+                    <thead>
+                        <tr>
+                            <th class="player-col">TOTALES</th>
+                            <th>MIN</th>
+                            <th>FG</th>
+                            <th>%2PT</th>
+                            <th>3P</th>
+                            <th>%3PT</th>
+                            <th>FT</th>
+                            <th>%FT</th>
+                            <th>OREB</th>
+                            <th>DREB</th>
+                            <th>REB</th>
+                            <th>AST</th>
+                            <th>STL</th>
+                            <th>BLK</th>
+                            <th>TOV</th>
+                            <th>PF</th>
+                            <th>+/-</th>
+                            <th>PTS</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Análisis por cuartos -->
+        <div class="card" id="quarter-stats" style="display: none;">
+            <h2>📈 Rendimiento por Cuarto</h2>
+            <div class="quarters-grid">
+                <div class="quarter-card">
+                    <h3>1er Cuarto</h3>
+                    <div id="q1-stats" class="quarter-stats-content"></div>
+                </div>
+                <div class="quarter-card">
+                    <h3>2do Cuarto</h3>
+                    <div id="q2-stats" class="quarter-stats-content"></div>
+                </div>
+                <div class="quarter-card">
+                    <h3>3er Cuarto</h3>
+                    <div id="q3-stats" class="quarter-stats-content"></div>
+                </div>
+                <div class="quarter-card">
+                    <h3>4to Cuarto</h3>
+                    <div id="q4-stats" class="quarter-stats-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline completo del partido -->
+        <div class="card" id="game-timeline" style="display: none;">
+            <h2>⏱️ Timeline Completo del Partido</h2>
+            <div class="timeline-container" id="timeline-content">
+                <!-- Se carga dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Navegación principal -->
+        <div class="card" style="text-align: center; margin-top: 2rem;">
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="index.html" class="btn ghost">🏠 Ir al Inicio</a>
+                <a href="live.html" class="btn secondary" id="back-to-live" style="display: none;">
+                    ← Volver al Partido en Vivo
+                </a>
+                <a href="partido.html" class="btn primary">🆕 Crear Nuevo Partido</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="reportes.js"></script>
+</body>
+</html>
